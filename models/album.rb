@@ -35,10 +35,38 @@ class Album
     return Artist.new(result[0])
   end
 
+  def update()
+    sql = "UPDATE albums
+    SET (
+      name,
+      genre
+    )
+    =
+    (
+      $1, $2
+    )
+    WHERE id = $3;"
+    SqlRunner.run(sql, [@name, @genre, @id])
+  end
+
+  def delete()
+    sql = "DELETE FROM albums
+    WHERE id = $1"
+    SqlRunner.run(sql, [@id])
+  end
+
+
   def Album.all()
     sql = "SELECT * FROM albums"
     result = SqlRunner.run(sql)
     return result.map { |album| Album.new(album)  }
+  end
+
+  def Album.find(album_id)
+    sql = "SELECT * FROM albums
+    WHERE id = $1"
+    result = SqlRunner.run(sql, [album_id])
+    return result.map { |album| Album.new(album) }
   end
 
 end
